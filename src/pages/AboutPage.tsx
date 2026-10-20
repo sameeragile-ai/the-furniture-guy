@@ -78,9 +78,9 @@ export const AboutPage: React.FC = () => {
 
           <div className="lg:col-span-6 relative aspect-[4/3] rounded-xs overflow-hidden shadow-xl border border-[#EEE8E1]">
             <SmartImage
-              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80"
-              alt="The Furniture Guy Showroom Interior"
-              fallbackTitle="Showroom Interior"
+              src="/assets/aistudio/WhatsApp_Image_2026-10-20_at_2.49.33_PM_417e481f.jpeg"
+              alt="The Furniture Guy Showroom Interior and Display Suites"
+              fallbackTitle="The Furniture Guy Showroom Suites"
               aspectRatio="auto"
               className="w-full h-full"
             />

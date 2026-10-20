@@ -63,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
 
         {/* Secondary Image Crossfade */}
         {product.images[1] && (
-          <div className={`absolute inset-0 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`absolute inset-0 transition-opacity duration-500 hidden sm:block ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <SmartImage
               src={product.images[1]}
               alt={`${product.name} alternate view`}
@@ -76,42 +76,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
         )}
 
         {/* Badges: Sale or Bestseller */}
-        <div className="absolute top-2.5 left-2.5 z-20 flex flex-col gap-1 items-start">
+        <div className="absolute top-2 left-2 z-20 flex flex-col gap-1 items-start">
           {product.salePrice && (
-            <span className="text-[10px] uppercase tracking-wider font-bold bg-[#C2566B] text-white px-2 py-0.5 rounded-xs shadow-xs">
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold bg-[#C2566B] text-white px-1.5 sm:px-2 py-0.5 rounded-xs shadow-xs">
               Save {discountPercent}%
             </span>
           )}
           {product.isBestseller && !product.salePrice && (
-            <span className="text-[10px] uppercase tracking-wider font-semibold bg-[#1C1B1F] text-white px-2 py-0.5 rounded-xs shadow-xs">
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold bg-[#1C1B1F] text-white px-1.5 sm:px-2 py-0.5 rounded-xs shadow-xs">
               Bestseller
             </span>
           )}
         </div>
 
-        {/* Wishlist Button */}
+        {/* Wishlist Button: Min 44x44px touch target area */}
         <button
           onClick={handleWishlistToggle}
-          className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-            inWishlist
-              ? 'bg-[#C2566B] text-white shadow-sm'
-              : 'bg-white/80 backdrop-blur-xs text-[#1C1B1F] hover:bg-white hover:text-[#C2566B]'
-          }`}
+          className={`absolute top-1 right-1 z-20 w-11 h-11 flex items-center justify-center transition-all active:scale-90`}
           aria-label={inWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
         >
-          <Heart className={`w-4 h-4 ${inWishlist ? 'fill-white' : ''}`} />
+          <div
+            className={`w-8 h-8 rounded-full flex items-center justify-center shadow-xs transition-colors ${
+              inWishlist
+                ? 'bg-[#C2566B] text-white'
+                : 'bg-white/85 backdrop-blur-xs text-[#1C1B1F] hover:bg-white'
+            }`}
+          >
+            <Heart className={`w-3.5 sm:w-4 h-3.5 sm:h-4 ${inWishlist ? 'fill-white' : ''}`} />
+          </div>
         </button>
 
-        {/* Hover Quick Action Slide-up */}
+        {/* Desktop Hover Quick Action Slide-up */}
         <div
-          className={`absolute bottom-0 inset-x-0 p-3 z-20 transition-all duration-300 ${
+          className={`absolute bottom-0 inset-x-0 p-2 sm:p-3 z-20 transition-all duration-300 hidden md:block ${
             isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'
           }`}
         >
           <div className="flex gap-2">
             <button
               onClick={handleQuickAdd}
-              className="flex-1 py-2 px-3 bg-white text-[#1C1B1F] hover:bg-luxe-gradient text-xs font-semibold rounded-xs shadow-md border border-[#EEE8E1] transition-all flex items-center justify-center gap-1.5"
+              className="flex-1 py-2 px-3 bg-white text-[#1C1B1F] hover:bg-luxe-gradient text-xs font-semibold rounded-xs shadow-md border border-[#EEE8E1] transition-all flex items-center justify-center gap-1.5 active:scale-95"
             >
               <ShoppingBag className="w-3.5 h-3.5" />
               <span>Quick Add</span>
@@ -123,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
                   e.stopPropagation();
                   onQuickView(product);
                 }}
-                className="w-8 h-8 bg-white/95 backdrop-blur-xs text-[#1C1B1F] hover:text-[#C9A27E] rounded-xs shadow-md border border-[#EEE8E1] flex items-center justify-center transition-colors"
+                className="w-8 h-8 bg-white/95 backdrop-blur-xs text-[#1C1B1F] hover:text-[#C9A27E] rounded-xs shadow-md border border-[#EEE8E1] flex items-center justify-center transition-colors active:scale-95"
                 aria-label="Quick view"
               >
                 <Eye className="w-3.5 h-3.5" />
@@ -134,38 +138,48 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
       </Link>
 
       {/* Metadata & Pricing */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
+      <div className="p-2.5 sm:p-4 flex-1 flex flex-col justify-between">
         <div>
           {/* Collection & Finish unboxed metadata */}
-          <div className="flex items-center gap-1.5 text-[11px] text-[#6B6670] mb-1">
-            <span>{product.collectionName}</span>
+          <div className="flex items-center gap-1 text-[10px] sm:text-[11px] text-[#6B6670] mb-0.5 truncate">
+            <span className="truncate">{product.collectionName}</span>
             <span aria-hidden="true">·</span>
             <span>{product.finish}</span>
           </div>
 
           <Link to={`/product/${product.slug}`} className="block">
-            <h3 className="font-serif text-base font-medium text-[#1C1B1F] group-hover:text-[#966C3E] transition-colors line-clamp-1 leading-snug">
+            <h3 className="font-serif text-xs sm:text-sm md:text-base font-medium text-[#1C1B1F] group-hover:text-[#966C3E] transition-colors line-clamp-1 leading-snug">
               {product.name}
             </h3>
           </Link>
         </div>
 
-        <div className="pt-3 mt-3 border-t border-[#F2ECE4] flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            <span className="font-sans font-semibold text-base text-[#1C1B1F] tabular-nums">
+        <div className="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-[#F2ECE4] flex items-center justify-between gap-1">
+          <div className="flex items-baseline gap-1 sm:gap-2">
+            <span className="font-sans font-bold text-xs sm:text-base text-[#1C1B1F] tabular-nums">
               {formatPrice(product.salePrice ?? product.price)}
             </span>
             {product.salePrice && (
-              <span className="text-xs text-[#8E8A94] line-through tabular-nums">
+              <span className="text-[10px] sm:text-xs text-[#8E8A94] line-through tabular-nums hidden sm:inline">
                 {formatPrice(product.price)}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-1 text-xs text-[#6B6670]">
-            <Star className="w-3.5 h-3.5 text-[#C9A27E] fill-[#C9A27E]" />
-            <span className="font-medium text-[#1C1B1F] text-[11px]">{product.rating}</span>
-            <span className="text-[10px]">({product.reviewCount})</span>
+          {/* Quick add icon button on mobile, rating on desktop */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleQuickAdd}
+              className="md:hidden w-8 h-8 rounded-full bg-[#FAF6F0] border border-[#EEE8E1] flex items-center justify-center text-[#1C1B1F] active:scale-90"
+              aria-label={`Quick add ${product.name} to basket`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-[#C9A27E]" />
+            </button>
+            <div className="hidden md:flex items-center gap-1 text-xs text-[#6B6670]">
+              <Star className="w-3.5 h-3.5 text-[#C9A27E] fill-[#C9A27E]" />
+              <span className="font-medium text-[#1C1B1F] text-[11px]">{product.rating}</span>
+              <span className="text-[10px]">({product.reviewCount})</span>
+            </div>
           </div>
         </div>
       </div>

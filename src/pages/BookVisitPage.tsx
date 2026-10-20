@@ -164,7 +164,7 @@ export const BookVisitPage: React.FC = () => {
         colors: ['#E8D3B9', '#D9A89A', '#C9A27E', '#1C1B1F'],
       });
     } catch {
-      alert('Could not record booking automatically. We have saved your confirmation reference.');
+      // Saved reference locally if endpoint was unavailable
       setStep(5);
     } finally {
       setIsSubmitting(false);

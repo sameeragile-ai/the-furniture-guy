@@ -9,6 +9,7 @@ interface SmartImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   aspectRatio?: 'square' | 'video' | 'portrait' | 'wide' | 'auto';
   className?: string;
   imageClassName?: string;
+  priority?: boolean;
 }
 
 export const SmartImage: React.FC<SmartImageProps> = ({
@@ -18,6 +19,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
   aspectRatio = 'square',
   className,
   imageClassName,
+  priority = false,
   ...props
 }) => {
   const [hasError, setHasError] = useState(false);
@@ -53,6 +55,13 @@ export const SmartImage: React.FC<SmartImageProps> = ({
     );
   }
 
+  // Generate responsive srcSet for Unsplash URLs to save mobile data & load faster
+  let srcSet: string | undefined = undefined;
+  if (src.includes('images.unsplash.com')) {
+    const baseUrl = src.split('?')[0];
+    srcSet = `${baseUrl}?auto=format&fit=crop&w=600&q=75 600w, ${baseUrl}?auto=format&fit=crop&w=1200&q=80 1200w`;
+  }
+
   return (
     <div
       className={cn(
@@ -63,13 +72,16 @@ export const SmartImage: React.FC<SmartImageProps> = ({
     >
       {/* Subtle skeleton shimmer before load */}
       {!isLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F5F5F7] via-[#EDEBE8] to-[#F5F5F7] animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F5F5F7] via-[#EDEBE8] to-[#F5F5F7] animate-pulse pointer-events-none" />
       )}
 
       <img
         src={src}
+        srcSet={srcSet}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         alt={alt}
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
         referrerPolicy="no-referrer"
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}

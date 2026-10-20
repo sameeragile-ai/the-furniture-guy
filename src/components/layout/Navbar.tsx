@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Heart, ShoppingBag, Phone, Menu, X, ChevronDown, Sparkles } from 'lucide-react';
+import { Search, Heart, ShoppingBag, Phone, Menu, X, ChevronDown, Sparkles, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { siteConfig } from '../../config/site';
 import { collections } from '../../data/collections';
@@ -28,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   // Scroll detection for navbar shrinking & frosted glass
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -43,6 +43,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     }
   }, [lastAddedItem]);
 
+  // Lock body scroll while mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [isMobileMenuOpen]);
+
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -51,11 +69,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Shop', href: '/shop' },
+    { name: 'Shop All', href: '/shop' },
     { name: 'Collections', href: '/shop', hasMegaMenu: true },
     { name: 'Clearance', href: '/clearance', isSale: true },
     { name: 'Book a Visit', href: '/book' },
-    { name: 'About', href: '/about' },
+    { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -67,25 +85,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 pt-safe ${
           isScrolled
-            ? 'h-[68px] glass-nav border-b border-[#EEE8E1] shadow-xs'
-            : 'h-[88px] bg-transparent'
+            ? 'h-[64px] sm:h-[68px] glass-nav border-b border-[#EEE8E1] shadow-xs'
+            : 'h-[76px] sm:h-[88px] bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          {/* Brand Wordmark (Zone 1) */}
+        <div className="max-w-7xl mx-auto h-full px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Brand Wordmark (Logo left) */}
           <Link
             to="/"
-            className="flex flex-col group py-1 shrink-0"
+            className="flex flex-col group py-1 shrink-0 min-h-[44px] justify-center"
             aria-label="The Furniture Guy homepage"
           >
             <div className="flex items-center gap-1.5">
-              <span className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[#1C1B1F] group-hover:text-[#966C3E] transition-colors leading-none">
+              <span className="font-serif text-xl sm:text-2xl lg:text-3xl font-medium tracking-tight text-[#1C1B1F] group-hover:text-[#966C3E] transition-colors leading-none">
                 {siteConfig.businessName}
               </span>
             </div>
-            <span className="text-[10px] tracking-[0.22em] uppercase font-semibold text-luxe-gradient leading-none mt-1">
+            <span className="text-[9px] sm:text-[10px] tracking-[0.22em] uppercase font-semibold text-luxe-gradient leading-none mt-1">
               {siteConfig.subBrand}
             </span>
           </Link>
@@ -103,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     onMouseLeave={() => setIsCollectionsHovered(false)}
                   >
                     <button
-                      className={`relative flex items-center gap-1 text-sm font-medium tracking-wide transition-colors py-2 ${
+                      className={`relative flex items-center gap-1 text-sm font-medium tracking-wide transition-colors py-2 min-h-[44px] ${
                         active ? 'text-[#1C1B1F] font-semibold' : 'text-[#4A4650] hover:text-[#1C1B1F]'
                       }`}
                     >
@@ -185,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.name}
                   to={link.href}
-                  className={`relative text-sm font-medium tracking-wide transition-colors py-2 ${
+                  className={`relative text-sm font-medium tracking-wide transition-colors py-2 min-h-[44px] flex items-center ${
                     link.isSale ? 'text-[#C2566B] font-semibold' : ''
                   } ${
                     active ? 'text-[#1C1B1F] font-semibold' : 'text-[#4A4650] hover:text-[#1C1B1F]'
@@ -210,26 +228,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             })}
           </nav>
 
-          {/* Right Action Icons (Zone 3) */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          {/* Right Action Icons (On mobile: Cart icon + Hamburger, Search & Wishlist also accessible) */}
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             {/* Search Icon */}
             <button
               onClick={onOpenSearch}
-              className="p-2 text-[#1C1B1F] hover:text-[#C9A27E] transition-colors"
+              className="w-11 h-11 flex items-center justify-center text-[#1C1B1F] hover:text-[#C9A27E] transition-colors active-press"
               aria-label="Open search"
             >
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Wishlist Link */}
+            {/* Wishlist Link (Hidden on smallest screens, available in mobile menu) */}
             <Link
               to="/wishlist"
-              className="relative p-2 text-[#1C1B1F] hover:text-[#C9A27E] transition-colors"
+              className="relative w-11 h-11 hidden sm:flex items-center justify-center text-[#1C1B1F] hover:text-[#C9A27E] transition-colors active-press"
               aria-label={`View wishlist (${wishlistCount} items)`}
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#1C1B1F] text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#1C1B1F] text-white text-[10px] font-bold flex items-center justify-center">
                   {wishlistCount}
                 </span>
               )}
@@ -238,12 +256,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* Cart Trigger with bounce animation */}
             <button
               onClick={() => setDrawerOpen(true)}
-              className="relative p-2 text-[#1C1B1F] hover:text-[#C9A27E] transition-colors"
+              className="relative w-11 h-11 flex items-center justify-center text-[#1C1B1F] hover:text-[#C9A27E] transition-colors active-press"
               aria-label={`View shopping basket (${itemCount} items)`}
             >
               <motion.div
-                animate={isCartBouncing ? { scale: [1, 1.3, 0.9, 1.15, 1] } : { scale: 1 }}
-                transition={{ duration: 0.6 }}
+                animate={isCartBouncing ? { scale: [1, 1.25, 0.95, 1.15, 1] } : { scale: 1 }}
+                transition={{ duration: 0.5 }}
               >
                 <ShoppingBag className="w-5 h-5" />
               </motion.div>
@@ -251,7 +269,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-1 right-1 w-4 h-4 rounded-full bg-luxe-gradient text-[#1C1B1F] text-[10px] font-bold flex items-center justify-center shadow-xs"
+                  className="absolute top-2 right-2 w-4 h-4 rounded-full bg-luxe-gradient text-[#1C1B1F] text-[10px] font-bold flex items-center justify-center shadow-xs"
                 >
                   {itemCount}
                 </motion.span>
@@ -261,16 +279,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* "Call Now" Pill with gradient border (desktop) */}
             <a
               href={`tel:${siteConfig.phone}`}
-              className="hidden md:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#1C1B1F] bg-white border border-[#D9A89A] hover:bg-luxe-gradient hover:border-transparent transition-all shadow-xs"
+              className="hidden md:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#1C1B1F] bg-white border border-[#D9A89A] hover:bg-luxe-gradient hover:border-transparent transition-all shadow-xs active-press"
             >
               <Phone className="w-3.5 h-3.5 text-[#C9A27E]" />
               <span>Call Us</span>
             </a>
 
-            {/* Mobile Hamburger Menu Toggle */}
+            {/* Mobile Hamburger Menu Toggle (Min 44x44px touch target) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 lg:hidden text-[#1C1B1F]"
+              className="w-11 h-11 lg:hidden flex items-center justify-center text-[#1C1B1F] active-press"
               aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -279,80 +297,102 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         </div>
       </header>
 
-      {/* Mobile Menu Drawer */}
+      {/* Full-screen Mobile Menu with light luxury gradient background */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-50 bg-[#FBF9F6] lg:hidden flex flex-col pt-20 pb-8 px-6 overflow-y-auto"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-50 bg-hero-radial lg:hidden flex flex-col pt-safe pb-safe px-5 sm:px-8 overflow-y-auto"
+            style={{ height: '100dvh' }}
           >
-            <div className="flex items-center justify-between pb-6 border-b border-[#EEE8E1]">
-              <span className="font-serif text-2xl text-[#1C1B1F]">{siteConfig.businessName}</span>
+            {/* Top Bar inside Menu */}
+            <div className="flex items-center justify-between py-4 border-b border-[#EEE8E1] shrink-0">
+              <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+                <span className="font-serif text-2xl font-medium text-[#1C1B1F]">
+                  {siteConfig.businessName}
+                </span>
+                <span className="block text-[9px] uppercase tracking-[0.2em] text-[#C9A27E] font-semibold">
+                  {siteConfig.subBrand}
+                </span>
+              </Link>
+
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-10 h-10 rounded-full border border-[#EEE8E1] flex items-center justify-center text-[#1C1B1F]"
+                className="w-11 h-11 rounded-full border border-[#EEE8E1] bg-white flex items-center justify-center text-[#1C1B1F] shadow-xs active-press"
+                aria-label="Close navigation"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="py-6 flex flex-col gap-4">
+            {/* Staggered Nav Links */}
+            <div className="py-6 flex flex-col gap-3 my-auto">
               {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.name}
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
+                  transition={{ delay: 0.05 + idx * 0.04, duration: 0.3 }}
                 >
                   <Link
                     to={link.href}
-                    className={`font-serif text-2xl transition-colors block py-1 ${
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`font-serif text-2xl sm:text-3xl transition-colors block py-2 min-h-[44px] flex items-center justify-between border-b border-[#EEE8E1]/60 ${
                       link.isSale ? 'text-[#C2566B]' : 'text-[#1C1B1F]'
                     }`}
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {link.isSale ? (
+                      <span className="text-[10px] font-sans font-bold uppercase tracking-wider bg-[#C2566B]/10 text-[#C2566B] px-2 py-0.5 rounded-xs">
+                        Sale
+                      </span>
+                    ) : (
+                      <span className="text-xs text-[#C9A27E] font-sans font-light">&rarr;</span>
+                    )}
                   </Link>
                 </motion.div>
               ))}
+
+              <motion.div
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.35, duration: 0.3 }}
+              >
+                <Link
+                  to="/wishlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="font-serif text-xl sm:text-2xl text-[#6B6670] flex items-center justify-between py-2 min-h-[44px]"
+                >
+                  <span className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-[#C9A27E]" />
+                    <span>Saved Wishlist ({wishlistCount})</span>
+                  </span>
+                  <span className="text-xs text-[#C9A27E]">&rarr;</span>
+                </Link>
+              </motion.div>
             </div>
 
-            {/* Mobile Quick Collections */}
-            <div className="pt-6 border-t border-[#EEE8E1]">
-              <span className="text-[11px] uppercase tracking-wider text-[#6B6670] font-medium block mb-3">
-                Featured Categories
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {collections.slice(0, 4).map((c) => (
-                  <Link
-                    key={c.id}
-                    to={`/collections/${c.slug}`}
-                    className="p-2.5 bg-white border border-[#EEE8E1] rounded-xs text-xs font-serif text-[#1C1B1F] flex items-center justify-between"
-                  >
-                    <span>{c.title}</span>
-                    <Sparkles className="w-3 h-3 text-[#C9A27E]" />
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile Contact & WhatsApp CTAs */}
-            <div className="mt-auto pt-8 flex flex-col gap-3">
+            {/* Mobile Contact & WhatsApp Callouts at bottom */}
+            <div className="pt-4 pb-6 mt-auto flex flex-col gap-3 border-t border-[#EEE8E1] shrink-0">
               <a
                 href={`https://wa.me/${siteConfig.whatsapp}?text=Hi,%20I'm%20interested%20in%20The%20Furniture%20Guy%20glam%20collection`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-3 bg-[#25D366] text-white text-center rounded-xs text-sm font-semibold flex items-center justify-center gap-2 shadow-xs"
+                className="w-full min-h-[46px] py-3 bg-[#25D366] text-white text-center rounded-xs text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active-press"
               >
-                Chat on WhatsApp
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>Chat on WhatsApp ({siteConfig.whatsappDisplay})</span>
               </a>
+
               <a
                 href={`tel:${siteConfig.phone}`}
-                className="w-full py-3 bg-[#1C1B1F] text-white text-center rounded-xs text-sm font-semibold flex items-center justify-center gap-2 shadow-xs"
+                className="w-full min-h-[46px] py-3 bg-[#1C1B1F] text-white text-center rounded-xs text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active-press"
               >
-                <Phone className="w-4 h-4" /> Call Our Team ({siteConfig.displayPhone})
+                <Phone className="w-4 h-4" />
+                <span>Call Showroom ({siteConfig.displayPhone})</span>
               </a>
             </div>
           </motion.div>

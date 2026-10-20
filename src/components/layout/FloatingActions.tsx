@@ -9,7 +9,7 @@ export const FloatingActions: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+      <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-3 mb-safe mr-safe">
         {/* Expanded buttons on mobile or always visible on desktop */}
         <div
           className={`flex flex-col items-end gap-3 transition-all duration-300 ${
@@ -68,13 +68,15 @@ export const FloatingActions: React.FC = () => {
           </a>
         </div>
 
-        {/* Mobile toggle button */}
+        {/* Mobile toggle button with soft pulse ring */}
         <button
           onClick={() => setIsOpenMobile(!isOpenMobile)}
-          className="md:hidden w-13 h-13 rounded-full bg-luxe-gradient text-[#1C1B1F] flex items-center justify-center shadow-xl border border-white"
+          className="relative md:hidden w-14 h-14 min-h-[44px] min-w-[44px] rounded-full bg-luxe-gradient text-[#1C1B1F] flex items-center justify-center shadow-xl border border-white active:scale-95 transition-transform"
           aria-label="Open contact options"
         >
-          <div className="flex flex-col items-center justify-center">
+          {/* Soft pulse ring */}
+          <span className="absolute -inset-1 rounded-full bg-[#E8D3B9]/60 animate-ping pointer-events-none" />
+          <div className="relative flex flex-col items-center justify-center">
             {isOpenMobile ? (
               <ChevronUp className="w-6 h-6 rotate-180 transition-transform" />
             ) : (

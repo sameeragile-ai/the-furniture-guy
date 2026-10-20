@@ -42,47 +42,48 @@ export const CollectionPage: React.FC = () => {
   const finishes = ['All', ...new Set(products.filter((p) => p.collectionSlug === collection.slug).map((p) => p.finish))];
 
   return (
-    <div className="pt-24 pb-24 bg-[#FBF9F6]">
+    <div className="pt-20 sm:pt-24 pb-24 bg-[#FBF9F6]">
       {/* Hero Banner */}
-      <div className="relative bg-[#1C1B1F] text-white py-20 overflow-hidden">
+      <div className="relative bg-[#1C1B1F] text-white py-12 sm:py-20 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
           <SmartImage
             src={collection.image}
             alt={collection.title}
             fallbackTitle={collection.title}
             aspectRatio="auto"
+            priority={true}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1F] via-[#1C1B1F]/60 to-transparent" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#E8D3B9] font-medium mb-3">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#E8D3B9] font-medium mb-2 sm:mb-3">
             <Link to="/shop" className="hover:underline">Shop</Link>
             <span>/</span>
             <span>Collections</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-5xl font-medium tracking-tight mb-3">
+          <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-medium tracking-tight mb-2 sm:mb-3">
             {collection.title}
           </h1>
-          <p className="text-sm sm:text-base text-[#DCDDE1] max-w-2xl leading-relaxed font-light">
+          <p className="text-xs sm:text-sm md:text-base text-[#DCDDE1] max-w-2xl leading-relaxed font-light">
             {collection.description}
           </p>
         </div>
       </div>
 
       {/* Main Grid & Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-6 sm:pt-10">
         {/* Filter & Sort Bar */}
-        <div className="bg-white border border-[#EEE8E1] rounded-xs p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+        <div className="bg-white border border-[#EEE8E1] rounded-xs p-3 sm:p-4 mb-6 sm:mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
           {/* Finish pills */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs text-[#6B6670] mr-2 font-medium">Finish:</span>
+          <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+            <span className="text-xs text-[#6B6670] mr-1 font-medium">Finish:</span>
             {finishes.map((f) => (
               <button
                 key={f}
                 onClick={() => setSelectedFinish(f)}
-                className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                className={`px-3 py-1.5 text-xs rounded-full border transition-all min-h-[36px] ${
                   selectedFinish === f
                     ? 'bg-[#1C1B1F] text-white border-[#1C1B1F]'
                     : 'bg-[#FBF9F6] text-[#6B6670] border-[#EEE8E1] hover:border-[#C9A27E]'
@@ -94,7 +95,7 @@ export const CollectionPage: React.FC = () => {
           </div>
 
           {/* Sort */}
-          <div className="flex items-center gap-2 text-xs text-[#6B6670]">
+          <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2 text-xs text-[#6B6670]">
             <span>Sort:</span>
             <select
               value={sortBy}
@@ -108,7 +109,7 @@ export const CollectionPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
+        {/* 2 columns on mobile, 3 on tablet, 4 on desktop */}
         {matchingProducts.length === 0 ? (
           <div className="text-center py-20 bg-white border border-[#EEE8E1] rounded-xs p-8 shadow-xs">
             <p className="font-serif text-xl text-[#1C1B1F] mb-2">
@@ -116,13 +117,13 @@ export const CollectionPage: React.FC = () => {
             </p>
             <button
               onClick={() => setSelectedFinish('All')}
-              className="mt-2 text-xs text-[#C9A27E] hover:underline"
+              className="mt-2 text-xs text-[#C9A27E] hover:underline py-2"
             >
               Show all {collection.title}
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
             {matchingProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

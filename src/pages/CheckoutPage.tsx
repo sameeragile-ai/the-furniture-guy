@@ -57,6 +57,7 @@ export const CheckoutPage: React.FC = () => {
   const [cardName, setCardName] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvc, setCardCvc] = useState('');
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -163,7 +164,7 @@ export const CheckoutPage: React.FC = () => {
         colors: ['#E8D3B9', '#D9A89A', '#C9A27E', '#1C1B1F'],
       });
     } catch {
-      alert('Unable to process order. Please call our showroom to complete over the telephone.');
+      setCheckoutError('Unable to process order online right now. Please call our showroom to complete your reservation over the phone.');
     } finally {
       setIsSubmitting(false);
     }
@@ -614,6 +615,12 @@ export const CheckoutPage: React.FC = () => {
                   <h2 className="font-serif text-2xl text-[#1C1B1F]">
                     Payment Method
                   </h2>
+
+                  {checkoutError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-xs text-xs text-red-700">
+                      {checkoutError}
+                    </div>
+                  )}
 
                   {/* Payment Method Selector */}
                   <div className="grid grid-cols-2 gap-3">
