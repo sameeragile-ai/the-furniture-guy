@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
+  --color-pearl: #FBF9F6;
+  --color-pearl-surface: #FFFFFF;
+  --color-pearl-border: #EEE8E1;
+  --color-graphite: #1C1B1F;
+  --color-graphite-muted: #6B6670;
+  --color-champagne-light: #E8D3B9;
+  --color-champagne-mid: #D9A89A;
+  --color-champagne-dark: #C9A27E;
+  --color-sale: #C2566B;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+  }
+  
+  body {
+    background-color: #FBF9F6;
+    color: #1C1B1F;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Custom luxury gradients and effects */
+.bg-luxe-gradient {
+  background: linear-gradient(135deg, #E8D3B9 0%, #D9A89A 50%, #C9A27E 100%);
+}
+
+.text-luxe-gradient {
+  background: linear-gradient(135deg, #7D5634 0%, #B87B67 45%, #966C3E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-silver-shimmer {
+  background: linear-gradient(120deg, #F5F5F7 0%, #DCDDE1 50%, #F5F5F7 100%);
+}
+
+.bg-hero-radial {
+  background: radial-gradient(circle at 10% 15%, rgba(247, 231, 225, 0.75) 0%, rgba(251, 249, 246, 0.95) 55%, rgba(236, 234, 242, 0.5) 100%);
+}
+
+.glass-nav {
+  background: rgba(251, 249, 246, 0.82);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Shimmer sweep animation */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer-sweep {
+  animation: shimmerSweep 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Grain texture overlay */
+.bg-grain {
+  background-image: radial-gradient(rgba(28, 27, 31, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Custom refined scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FBF9F6;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9A89A;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A27E;
+}

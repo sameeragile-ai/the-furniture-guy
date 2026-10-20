@@ -1,0 +1,6 @@
+{
+  "name": "The Furniture Guy | King of Bling",
+  "description": "Luxury mirrored, crushed-diamond, and silver-finish glam furniture and home décor in the UK. Free local delivery over £499.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
